@@ -7,7 +7,7 @@ function SearchPage() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('query') || '';  // Get the search query from the URL
     const [main, setMain] = useState('');
-    const [subP, setSub] = useState('');
+    const [sub, setSub] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -19,7 +19,6 @@ function SearchPage() {
         try {
             const response = await axios.get(`http://localhost:3001/api/search?query=${encodeURIComponent(query)}`);
             if (response.data.success) {
-                console.log('sub response: '+ response.data.jobType.sub);
                 setMain(response.data.jobType.main);
                 setSub(response.data.jobType.sub);
             } else {
@@ -43,9 +42,8 @@ function SearchPage() {
     // Handle form submission to confirm the selected main and sub categories
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Submitting:', { main, subP }); // Log values before navigating
-        if (main && subP) {
-            navigate('/main', { state: { main, subP } });
+        if (main && sub) {
+            navigate('/main', { state: { main, sub } });
         }
     };
 
@@ -84,7 +82,7 @@ function SearchPage() {
 
                                         {error && <p className="error-message">{error}</p>}
 
-                                        {main && subP && (
+                                        {main && sub && (
                                             <div className="top">
                                                 <div className="input">
                                                     <label dir="rtl" htmlFor="main">תחום</label>
@@ -101,8 +99,8 @@ function SearchPage() {
                                                     <input
                                                         type="text"
                                                         dir="rtl"
-                                                        placeholder={subP}
-                                                        value={subP}
+                                                        placeholder={sub}
+                                                        value={sub}
                                                         readOnly
                                                     />
                                                 </div>
