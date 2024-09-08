@@ -12,7 +12,7 @@ function MainPage() {
     const [main, setMain] = useState(location.state?.main || '');
     const [sub, setSub] = useState(location.state?.subP || '');
     const [locationValue, setLocationValue] = useState('');
-    const [dateAndTime, setDateAndTime] = useState('2024-06-16T18:00');
+    const [dateAndTime, setDateAndTime] = useState('');
     const [searchInput, setSearchInput] = useState('');
 
     useEffect(() => {
