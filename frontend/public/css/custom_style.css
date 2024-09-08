@@ -427,12 +427,12 @@ New css code
 }
 
 .responseText form label {
-    
-text-align: right;
-    
-float: right;
-    
-color: white;
+
+    text-align: right;
+
+    float: right;
+
+    color: white;
 }
 
 .responseText form br {
@@ -475,7 +475,7 @@ color: white;
     cursor: pointer;
 }
 .search .buttonSearchIcon:hover{
-    font-weight: 700;    
+    font-weight: 700;
 }
 .buttonSearch {
     padding: 8px 50px;
@@ -486,22 +486,22 @@ color: white;
     border-radius: 4px;
     margin: 15px 0;
 }
- .buttonSearchIcon {
-            background-color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
+.buttonSearchIcon {
+    background-color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
 
-        .buttonSearchIcon.blue-background {
-            background-color: #1783e0;
+.buttonSearchIcon.blue-background {
+    background-color: #1783e0;
     border-radius: 4px;
-        }
+}
 
-        .buttonSearchIcon i {
-            font-size: 24px;
-            color: #fff;
-        }
+.buttonSearchIcon i {
+    font-size: 24px;
+    color: #fff;
+}
 
 
 

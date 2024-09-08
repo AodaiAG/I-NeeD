@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import PC from '../components/PC';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PC from '../components/PC';
 
 function MainPage() {
-    const [mainOptions, setMainOptions] = useState([]);  // Main professions
-    const [subOptions, setSubOptions] = useState([]);    // Sub professions
-    const [main, setMain] = useState('');
-    const [sub, setSub] = useState('');
-    const [location, setLocation] = useState('');
-    const [dateAndTime, setDateAndTime] = useState('16/06/2024 18:00');  // Placeholder for calendar
-    const [searchInput, setSearchInput] = useState('');  // Capture search input
+    const location = useLocation();
     const navigate = useNavigate();
 
-    // Fetch Main Professions from the backend
+    const [mainOptions, setMainOptions] = useState([]);
+    const [subOptions, setSubOptions] = useState([]);
+    const [main, setMain] = useState(location.state?.main || '');
+    const [sub, setSub] = useState(location.state?.subP || '');
+    const [locationValue, setLocationValue] = useState('');
+    const [dateAndTime, setDateAndTime] = useState('2024-06-16T18:00');
+    const [searchInput, setSearchInput] = useState('');
+
+    useEffect(() => {
+        console.log('Location State:', location.state);
+        console.log('Main:', main);
+        console.log('Sub:', sub);
+    }, [location.state, main, sub]);
+
+    // Fetch Main Professions
     useEffect(() => {
         const fetchMainProfessions = async () => {
             try {
-                const response = await axios.get('/api/main-professions');  // Replace with your backend API
+                const response = await axios.get('http://localhost:3001/api/main-professions');
                 setMainOptions(response.data);
             } catch (error) {
                 console.error('Error fetching main professions:', error);
@@ -26,20 +34,32 @@ function MainPage() {
         fetchMainProfessions();
     }, []);
 
-    // Fetch Sub Professions when Main Profession is selected
+    // Fetch Sub Professions based on selected Main Profession
     useEffect(() => {
         if (main) {
             const fetchSubProfessions = async () => {
                 try {
-                    const response = await axios.get(`/api/sub-professions/${main}`);  // Replace with your backend API
+                    const response = await axios.get(`http://localhost:3001/api/sub-professions/${main}`);
                     setSubOptions(response.data);
+
+                    // Map text to ID if text is available
+                    if (location.state?.subP) {
+                        const matchingSubOption = response.data.find(option => option.sub === location.state.subP);
+                        if (matchingSubOption) {
+                            setSub(matchingSubOption.id);
+                        }
+                    }
                 } catch (error) {
                     console.error('Error fetching sub professions:', error);
                 }
             };
             fetchSubProfessions();
+        } else {
+            setSubOptions([]);
+            setSub('');
         }
-    }, [main]);
+    }, [main, location.state?.subP]);
+
 
     // Handle search input change
     const handleSearchInputChange = (e) => {
@@ -48,8 +68,8 @@ function MainPage() {
 
     // Handle search submission
     const handleSearch = () => {
-        if (searchInput.trim() !== '') {
-            navigate(`/search?query=${encodeURIComponent(searchInput)}`);  // Pass search query to the search page
+        if (searchInput.trim()) {
+            navigate(`/search?query=${encodeURIComponent(searchInput)}`);
         }
     };
 
@@ -82,7 +102,6 @@ function MainPage() {
 
                                 <form className="mt-1 form-book">
                                     <div className="select_input_container">
-
                                         {/* Main Profession Dropdown */}
                                         <div className="select_item">
                                             <label dir="rtl" htmlFor="main">בחר תחום:</label>
@@ -97,7 +116,7 @@ function MainPage() {
                                                     <option value="">ללא בחירה:</option>
                                                     {mainOptions.map(option => (
                                                         <option key={option.id} value={option.id}>
-                                                            {option.name}
+                                                            {option.main}
                                                         </option>
                                                     ))}
                                                 </select>
@@ -113,13 +132,17 @@ function MainPage() {
                                                     className="custom-select"
                                                     name="sub"
                                                     value={sub}
-                                                    onChange={(e) => setSub(e.target.value)}
+                                                    onChange={(e) => {
+                                                        console.log('Sub Changed:', e.target.value); // Log when sub profession changes
+                                                        setSub(e.target.value);
+                                                    }}
                                                     required
+                                                    disabled={!main}
                                                 >
                                                     <option value="">ללא בחירה:</option>
                                                     {subOptions.map(option => (
                                                         <option key={option.id} value={option.id}>
-                                                            {option.name}
+                                                            {option.sub}
                                                         </option>
                                                     ))}
                                                 </select>
@@ -133,11 +156,11 @@ function MainPage() {
                                             <div className="custom-select-wrapper menu">
                                                 <Link to='/location'>
                                                     <input
-                                                        type="text"
                                                         className="custom-select"
+                                                        type="text"
                                                         name="location"
                                                         placeholder="בחר מיקום לשירות"
-                                                        value={location}
+                                                        value={locationValue}
                                                         readOnly
                                                     />
                                                 </Link>
