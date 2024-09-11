@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PC from '../components/PC';
@@ -16,6 +16,12 @@ function MainPage() {
     const [searchInput, setSearchInput] = useState('')
 
     const [minDate, setMinDate] = useState('');
+    const dateInputRef = useRef(null);  // Ref for the datetime-local input
+    const handleCalendarClick = () => {
+        if (dateInputRef.current) {
+            dateInputRef.current.showPicker();  // Trigger the calendar pop-up
+        }
+    };
 
     useEffect(() => {
         // Set the minimum date to the current date and time
@@ -187,7 +193,7 @@ function MainPage() {
                                         {/* Calendar/Time Selection */}
                                         <div className="select_item">
                                             <label dir="rtl" htmlFor="dateAndTime">בחר זמן:</label>
-                                            <div className="custom-select-wrapper menu">
+                                            <div className="custom-select-wrapper menu" onClick={handleCalendarClick}>
                                                 {/* Hidden textarea (for consistency with PHP structure) */}
                                                 <textarea
                                                     type="text"
@@ -202,6 +208,7 @@ function MainPage() {
                                                 {/* Triggered input with onChange handler */}
                                                 <div className="dropdown">
                                                     <input
+                                                        ref={dateInputRef}  // Add ref to the input element
                                                         type="datetime-local"
                                                         className="custom-select"
                                                         value={dateAndTime}
@@ -209,7 +216,8 @@ function MainPage() {
                                                         onChange={handleDateAndTimeChange}  // React logic remains intact
                                                     />
                                                 </div>
-                                                <i className="ri-arrow-down-s-fill select-icon"></i>
+                                                <i className="ri-arrow-down-s-fill select-icon"
+                                                   onClick={handleCalendarClick}></i>
                                             </div>
                                         </div>
                                     </div>
