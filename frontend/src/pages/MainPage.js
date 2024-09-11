@@ -13,7 +13,22 @@ function MainPage() {
     const [sub, setSub] = useState(location.state?.subP || '');
     const [locationValue, setLocationValue] = useState('');
     const [dateAndTime, setDateAndTime] = useState('');
-    const [searchInput, setSearchInput] = useState('');
+    const [searchInput, setSearchInput] = useState('')
+
+    const [minDate, setMinDate] = useState('');
+
+    useEffect(() => {
+        // Set the minimum date to the current date and time
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        // Set the minimum date to today’s date (yyyy-MM-ddTHH:mm)
+        setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+    }, []);
 
     useEffect(() => {
         console.log('Location State:', location.state);
@@ -154,35 +169,52 @@ function MainPage() {
                                         <div className="select_item">
                                             <label dir="rtl" htmlFor="location">בחר עיר:</label>
                                             <div className="custom-select-wrapper menu">
-                                                <Link to='/location'>
-                                                    <input
-                                                        className="custom-select"
-                                                        type="text"
-                                                        name="location"
-                                                        placeholder="בחר מיקום לשירות"
-                                                        value={locationValue}
-                                                        readOnly
-                                                    />
-                                                </Link>
+                                                <input
+                                                    type="text"
+                                                    dir="rtl"
+                                                    className="custom-select"
+                                                    name="location"
+                                                    id="location"
+                                                    onClick={() => window.location.href = '/location'}  // Navigate to location page
+                                                    value={locationValue}
+                                                    placeholder="בחר מיקום לשירות"
+                                                    readOnly
+                                                />
                                                 <i className="ri-arrow-down-s-fill select-icon"></i>
                                             </div>
                                         </div>
 
                                         {/* Calendar/Time Selection */}
                                         <div className="select_item">
-                                            <label dir="rtl">בחר זמן:</label>
-                                            <div className="dropdown">
-                                                <input
-                                                    type="datetime-local"
-                                                    className="custom-select"
+                                            <label dir="rtl" htmlFor="dateAndTime">בחר זמן:</label>
+                                            <div className="custom-select-wrapper menu">
+                                                {/* Hidden textarea (for consistency with PHP structure) */}
+                                                <textarea
+                                                    type="text"
+                                                    name="dateAndTime"
+                                                    className="calendar-date-input"
+                                                    style={{display: 'none'}}
                                                     value={dateAndTime}
-                                                    onChange={handleDateAndTimeChange}
-                                                />
+                                                    readOnly
+                                                    required
+                                                ></textarea>
+
+                                                {/* Triggered input with onChange handler */}
+                                                <div className="dropdown">
+                                                    <input
+                                                        type="datetime-local"
+                                                        className="custom-select"
+                                                        value={dateAndTime}
+                                                        min={minDate}
+                                                        onChange={handleDateAndTimeChange}  // React logic remains intact
+                                                    />
+                                                </div>
+                                                <i className="ri-arrow-down-s-fill select-icon"></i>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <button type="submit" className="navigate-links btnSubmit mt-5">קדימה</button>
+                                    <button type="submit" className="navigate-links btnSubmit mt-1">קדימה</button>
                                 </form>
                             </div>
                         </div>
