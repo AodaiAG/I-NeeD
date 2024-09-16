@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PC from '../components/PC';
-import { Link } from 'react-router-dom';
 
 function LocationPage() {
-    const [address, setAddress] = useState(localStorage.getItem('location') || '');
+    const [address, setAddress] = useState(localStorage.getItem('location') || '');  // Remove any hardcoded placeholder
     const [lat, setLat] = useState('');
     const [lon, setLon] = useState('');
 
@@ -95,8 +94,12 @@ function LocationPage() {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('location', address);
-        window.location.href = '/main';
+        if (address.trim() === '') {
+            alert('Please enter a valid location.');
+        } else {
+            localStorage.setItem('location', address);
+            window.location.href = '/main';
+        }
     };
 
     return (
@@ -114,8 +117,8 @@ function LocationPage() {
                                     type="text"
                                     id="locationInput"
                                     value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                    placeholder="1234 Elm St, City, Country"
+                                    onChange={(e) => setAddress(e.target.value)}  // Allow typing manually
+                                    placeholder="1234 Elm St, City, Country"  // Placeholder for location input
                                 />
                                 {/* Find Me button with Geolocation */}
                                 <button className="myLocationBtn" onClick={handleFindMe}>
@@ -130,9 +133,7 @@ function LocationPage() {
                                     Confirm
                                 </button>
 
-                                <div className="bottom">
-                                    <Link to="/main">Back</Link>
-                                </div>
+                                {/* Removed the Back button */}
                             </div>
                         </div>
                     </div>

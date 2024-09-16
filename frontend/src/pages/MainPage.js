@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PC from '../components/PC';
@@ -9,11 +9,11 @@ function MainPage() {
 
     const [mainOptions, setMainOptions] = useState([]);
     const [subOptions, setSubOptions] = useState([]);
-    const [main, setMain] = useState(location.state?.main || '');
-    const [sub, setSub] = useState(location.state?.subP || '');
-    const [locationValue, setLocationValue] = useState('');
-    const [dateAndTime, setDateAndTime] = useState('');
-    const [searchInput, setSearchInput] = useState('')
+    const [main, setMain] = useState(localStorage.getItem('main') || location.state?.main || '');
+    const [sub, setSub] = useState(localStorage.getItem('sub') || location.state?.subP || '');
+    const [locationValue, setLocationValue] = useState(localStorage.getItem('location') || '');
+    const [dateAndTime, setDateAndTime] = useState(localStorage.getItem('dateAndTime') || '');
+    const [searchInput, setSearchInput] = useState('');
 
     const [minDate, setMinDate] = useState('');
     const dateInputRef = useRef(null);  // Ref for the datetime-local input
@@ -24,15 +24,12 @@ function MainPage() {
     };
 
     useEffect(() => {
-        // Set the minimum date to the current date and time
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-
-        // Set the minimum date to today’s date (yyyy-MM-ddTHH:mm)
         setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
     }, []);
 
@@ -63,7 +60,6 @@ function MainPage() {
                     const response = await axios.get(`http://localhost:3001/api/sub-professions/${main}`);
                     setSubOptions(response.data);
 
-                    // Map text to ID if text is available
                     if (location.state?.subP) {
                         const matchingSubOption = response.data.find(option => option.sub === location.state.subP);
                         if (matchingSubOption) {
@@ -81,6 +77,13 @@ function MainPage() {
         }
     }, [main, location.state?.subP]);
 
+    // Store selected values in localStorage before navigating away
+    useEffect(() => {
+        localStorage.setItem('main', main);
+        localStorage.setItem('sub', sub);
+        localStorage.setItem('location', locationValue);
+        localStorage.setItem('dateAndTime', dateAndTime);
+    }, [main, sub, locationValue, dateAndTime]);
 
     // Handle search input change
     const handleSearchInputChange = (e) => {
@@ -153,10 +156,7 @@ function MainPage() {
                                                     className="custom-select"
                                                     name="sub"
                                                     value={sub}
-                                                    onChange={(e) => {
-                                                        console.log('Sub Changed:', e.target.value); // Log when sub profession changes
-                                                        setSub(e.target.value);
-                                                    }}
+                                                    onChange={(e) => setSub(e.target.value)}
                                                     required
                                                     disabled={!main}
                                                 >
@@ -181,7 +181,7 @@ function MainPage() {
                                                     className="custom-select"
                                                     name="location"
                                                     id="location"
-                                                    onClick={() => window.location.href = '/location'}  // Navigate to location page
+                                                    onClick={() => window.location.href = '/location'}
                                                     value={locationValue}
                                                     placeholder="בחר מיקום לשירות"
                                                     readOnly
@@ -194,30 +194,27 @@ function MainPage() {
                                         <div className="select_item">
                                             <label dir="rtl" htmlFor="dateAndTime">בחר זמן:</label>
                                             <div className="custom-select-wrapper menu" onClick={handleCalendarClick}>
-                                                {/* Hidden textarea (for consistency with PHP structure) */}
                                                 <textarea
                                                     type="text"
                                                     name="dateAndTime"
                                                     className="calendar-date-input"
-                                                    style={{display: 'none'}}
+                                                    style={{ display: 'none' }}
                                                     value={dateAndTime}
                                                     readOnly
                                                     required
                                                 ></textarea>
 
-                                                {/* Triggered input with onChange handler */}
                                                 <div className="dropdown">
                                                     <input
-                                                        ref={dateInputRef}  // Add ref to the input element
+                                                        ref={dateInputRef}
                                                         type="datetime-local"
                                                         className="custom-select"
                                                         value={dateAndTime}
                                                         min={minDate}
-                                                        onChange={handleDateAndTimeChange}  // React logic remains intact
+                                                        onChange={handleDateAndTimeChange}
                                                     />
                                                 </div>
-                                                <i className="ri-arrow-down-s-fill select-icon"
-                                                   onClick={handleCalendarClick}></i>
+                                                <i className="ri-arrow-down-s-fill select-icon" onClick={handleCalendarClick}></i>
                                             </div>
                                         </div>
                                     </div>
