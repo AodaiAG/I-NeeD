@@ -1,5 +1,7 @@
 const twilio = require('twilio');
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID; // Twilio Account SID
+const authToken = process.env.TWILIO_AUTH_TOKEN; // Twilio Auth Token
 const client = twilio(accountSid, authToken);
 
 const sendVerificationCode = async (phone, verificationCode) => {

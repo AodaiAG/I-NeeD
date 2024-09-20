@@ -304,6 +304,34 @@ body{
     text-align: right;
     color: #222825;
 }
+/* Style for the overlay */
+.preloader-popup {
+    position: fixed; /* Fixed position to cover the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above content but adjust if needed */
+    pointer-events: none; /* Allows interaction with content beneath */
+    overflow: auto; /* Allows scroll if needed */
+}
+
+/* Style for the loader */
+.preloader-content {
+    text-align: center;
+    position: relative;
+    z-index: 1001; /* Make sure loader content is on top of overlay */
+}
+
+.preloader-content img {
+    width: 50px; /* Adjust size as needed */
+    height: auto;
+}
+
 .dropdown .menu li:hover {
     background-color: #dadada;
 }
@@ -343,6 +371,43 @@ body{
 .loc-badge img{
     width: 20px;
 }
+/* Increase the size of the location input */
+#locationInput {
+    width: 100%;           /* Make the input take full width */
+    padding: 15px;          /* Add padding for a bigger click/tap area */
+    font-size: 18px;        /* Increase the font size */
+    border: 2px solid #ccc; /* Add a subtle border */
+    border-radius: 8px;     /* Add rounded corners */
+    margin-bottom: 15px;    /* Add space below the input field */
+}
+
+/* Increase the size of the buttons */
+.myLocationBtn,
+.locationSubmitBtn {
+    width: 100%;           /* Make the buttons take full width */
+    padding: 15px;         /* Add padding for larger button size */
+    font-size: 18px;       /* Increase the font size */
+    background-color: #007bff; /* Set background color */
+    color: white;          /* Set text color */
+    border: none;          /* Remove border */
+    border-radius: 8px;    /* Add rounded corners */
+    cursor: pointer;       /* Add pointer cursor for buttons */
+    margin-top: 10px;      /* Add space above the button */
+}
+
+/* Change button background on hover */
+.myLocationBtn:hover,
+.locationSubmitBtn:hover {
+    background-color: #0056b3; /* Darken the button color on hover */
+}
+
+/* Map container */
+#map {
+    margin-top: 15px;       /* Add margin to the top of the map */
+    border: 1px solid #ccc; /* Add a border around the map */
+    border-radius: 8px;     /* Add rounded corners to the map */
+}
+
 
 @media screen and (max-width:992px) {
     .left-col{

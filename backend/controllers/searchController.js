@@ -3,7 +3,7 @@ const OpenAI = require('openai');
 
 // Initialize OpenAI client
 const client = new OpenAI({
-    apiKey: '', // Replace with your actual OpenAI API key
+    apiKey: process.env.OPENAI_API_KEY, // OpenAI API key
 });
 
 // Controller function for handling AI-based job search
@@ -43,16 +43,29 @@ const search = async (req, res) => {
                 });
             } else {
                 // Step 5: If AI suggests something not in the database, return "job not available"
+                const firstJob = jobTitles[0];
+
+                // Step 3: Return the first job type as JSON
                 return res.json({
-                    success: false,
-                    message: `The job ${aiJobType.main} - ${aiJobType.sub} is not available in our database.`
+                    success: true,
+                    jobType: {
+                        main: firstJob.main,
+                        sub: firstJob.sub
+                    }
                 });
             }
-        } else {
+        } else
+        {
             // Step 6: If AI doesn't find a match, return a "job not found" message
+            const firstJob = jobTitles[0];
+
+            // Step 3: Return the first job type as JSON
             return res.json({
-                success: false,
-                message: 'No relevant profession found for your search.'
+                success: true,
+                jobType: {
+                    main: firstJob.main,
+                    sub: firstJob.sub
+                }
             });
         }
     } catch (error) {

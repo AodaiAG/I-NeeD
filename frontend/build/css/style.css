@@ -265,6 +265,125 @@ body{
     justify-content: space-between;
     color: #222825;
 }
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+/* Popup Overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Popup Content */
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Popup Items */
+.popup-item {
+    margin-bottom: 15px;
+}
+
+.popup-item label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.popup-item input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Popup Search Bar */
+.popup-search {
+    margin-bottom: 20px;
+}
+
+.popup-search input {
+    width: calc(100% - 70px);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.popup-search button {
+    width: 60px;
+    padding: 8px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Confirm Button */
+.popup-confirm {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 .dropdown .select .selected {
     overflow: hidden;
     white-space: nowrap;
@@ -274,6 +393,142 @@ body{
     color: #222825;
     font-size: 16px;
 }
+/* General popup styles */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+/* Popup header */
+.popup-header {
+    display: flex;
+    justify-content: center; /* Centers the header text horizontally */
+    align-items: center;
+    position: relative;
+}
+
+/* Center the close icon on the top-right corner */
+.close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Center the text inside the input fields */
+.popup-body input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 16px;
+    text-align: center; /* Center the text inside input fields */
+}
+
+.popup-body button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1783E0 !important;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+.popup-content {
+    background-color: #FDBE00 !important; /* Yellow background */
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Close icon styling */
+.close-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.close-icon:hover {
+    color: #000;
+}
+
+/* Popup body styling */
+.popup-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Centered search bar and buttons */
+.popup-body input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.popup-body button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1783E0 !important;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.popup-body button:hover {
+    background-color: #005bb5;
+}
+
+/* Popup field labels */
+.popup-field label {
+    display: block;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.popup-field input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
 .dropdown .select .caret {
     margin-left: 5px;
     width: 10px;
@@ -304,6 +559,34 @@ body{
     text-align: right;
     color: #222825;
 }
+/* Style for the overlay */
+.preloader-popup {
+    position: fixed; /* Fixed position to cover the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above content but adjust if needed */
+    pointer-events: none; /* Allows interaction with content beneath */
+    overflow: auto; /* Allows scroll if needed */
+}
+
+/* Style for the loader */
+.preloader-content {
+    text-align: center;
+    position: relative;
+    z-index: 1001; /* Make sure loader content is on top of overlay */
+}
+
+.preloader-content img {
+    width: 50px; /* Adjust size as needed */
+    height: auto;
+}
+
 .dropdown .menu li:hover {
     background-color: #dadada;
 }
@@ -343,6 +626,43 @@ body{
 .loc-badge img{
     width: 20px;
 }
+/* Increase the size of the location input */
+#locationInput {
+    width: 100%;           /* Make the input take full width */
+    padding: 15px;          /* Add padding for a bigger click/tap area */
+    font-size: 18px;        /* Increase the font size */
+    border: 2px solid #ccc; /* Add a subtle border */
+    border-radius: 8px;     /* Add rounded corners */
+    margin-bottom: 15px;    /* Add space below the input field */
+}
+
+/* Increase the size of the buttons */
+.myLocationBtn,
+.locationSubmitBtn {
+    width: 100%;           /* Make the buttons take full width */
+    padding: 15px;         /* Add padding for larger button size */
+    font-size: 18px;       /* Increase the font size */
+    background-color: #007bff; /* Set background color */
+    color: white;          /* Set text color */
+    border: none;          /* Remove border */
+    border-radius: 8px;    /* Add rounded corners */
+    cursor: pointer;       /* Add pointer cursor for buttons */
+    margin-top: 10px;      /* Add space above the button */
+}
+
+/* Change button background on hover */
+.myLocationBtn:hover,
+.locationSubmitBtn:hover {
+    background-color: #0056b3; /* Darken the button color on hover */
+}
+
+/* Map container */
+#map {
+    margin-top: 15px;       /* Add margin to the top of the map */
+    border: 1px solid #ccc; /* Add a border around the map */
+    border-radius: 8px;     /* Add rounded corners to the map */
+}
+
 
 @media screen and (max-width:992px) {
     .left-col{

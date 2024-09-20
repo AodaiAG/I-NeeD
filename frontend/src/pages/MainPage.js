@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PC from '../components/PC';
+import {API_URL} from "../utils/constans";
 
 function MainPage() {
     const location = useLocation();
@@ -9,8 +10,8 @@ function MainPage() {
 
     const [mainOptions, setMainOptions] = useState([]);
     const [subOptions, setSubOptions] = useState([]);
-    const [main, setMain] = useState(localStorage.getItem('main') || location.state?.main || '');
-    const [sub, setSub] = useState(localStorage.getItem('sub') || location.state?.subP || '');
+    const [main, setMain] = useState(location.state?.main || localStorage.getItem('main') ||'');
+    const [sub, setSub] = useState( location.state?.subP ||localStorage.getItem('sub') || '');
     const [locationValue, setLocationValue] = useState(localStorage.getItem('location') || '');
     const [dateAndTime, setDateAndTime] = useState(localStorage.getItem('dateAndTime') || '');
     const [searchInput, setSearchInput] = useState('');
@@ -22,6 +23,11 @@ function MainPage() {
             dateInputRef.current.showPicker();  // Trigger the calendar pop-up
         }
     };
+    useEffect(() => {
+        console.log('Sub options:', subOptions);
+    }, [subOptions]);
+
+
 
     useEffect(() => {
         const now = new Date();
@@ -33,18 +39,15 @@ function MainPage() {
         setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
     }, []);
 
-    useEffect(() => {
-        console.log('Location State:', location.state);
-        console.log('Main:', main);
-        console.log('Sub:', sub);
-    }, [location.state, main, sub]);
+
 
     // Fetch Main Professions
     useEffect(() => {
         const fetchMainProfessions = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/main-professions');
-                setMainOptions(response.data);
+                const response = await axios.get(`${API_URL}/main-professions`);
+                const dataWithoutFirst = response.data.slice(1); // Exclude the first item from the array
+                setMainOptions(dataWithoutFirst);
             } catch (error) {
                 console.error('Error fetching main professions:', error);
             }
@@ -57,8 +60,8 @@ function MainPage() {
         if (main) {
             const fetchSubProfessions = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3001/api/sub-professions/${main}`);
-                    setSubOptions(response.data);
+                    const response = await axios.get(`${API_URL}/sub-professions/${main}`);
+                    setSubOptions(response.data.slice(1));
 
                     if (location.state?.subP) {
                         const matchingSubOption = response.data.find(option => option.sub === location.state.subP);
@@ -85,14 +88,38 @@ function MainPage() {
         localStorage.setItem('dateAndTime', dateAndTime);
     }, [main, sub, locationValue, dateAndTime]);
 
+
     // Handle search input change
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
+
+
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        // Redirect to another page (for example, an "information" page)
+        if (e.currentTarget.checkValidity()) {
+            navigate('/information', {
+                state: {
+                    main,
+                    sub,
+                    location: locationValue,
+                    dateAndTime
+                }
+            });
+        }
+        else {
+            // If form is invalid, trigger validation UI
+            e.currentTarget.reportValidity(); // Trigger HTML5 validation error messages
+        }
+
     };
 
     // Handle search submission
     const handleSearch = () => {
         if (searchInput.trim()) {
+
             navigate(`/search?query=${encodeURIComponent(searchInput)}`);
         }
     };
@@ -120,11 +147,12 @@ function MainPage() {
                                         value={searchInput}
                                         onChange={handleSearchInputChange}
                                         placeholder="חיפוש ..."
+                                        required
                                     />
                                     <i className="ri-search-line" onClick={handleSearch}></i>
                                 </div>
 
-                                <form className="mt-1 form-book">
+                                <form className="mt-1 form-book" onSubmit={handleSubmit}>
                                     <div className="select_input_container">
                                         {/* Main Profession Dropdown */}
                                         <div className="select_item">
@@ -185,8 +213,9 @@ function MainPage() {
                                                     value={locationValue}
                                                     placeholder="בחר מיקום לשירות"
                                                     readOnly
+                                                    required
                                                 />
-                                                <i className="ri-arrow-down-s-fill select-icon"></i>
+
                                             </div>
                                         </div>
 
@@ -212,6 +241,7 @@ function MainPage() {
                                                         value={dateAndTime}
                                                         min={minDate}
                                                         onChange={handleDateAndTimeChange}
+                                                        required
                                                     />
                                                 </div>
                                                 <i className="ri-arrow-down-s-fill select-icon" onClick={handleCalendarClick}></i>
@@ -219,7 +249,7 @@ function MainPage() {
                                         </div>
                                     </div>
 
-                                    <button type="submit" className="navigate-links btnSubmit mt-1">קדימה</button>
+                                    <button type="submit" className="navigate-links btnSubmit mt-1" onSubmit={handleSubmit}>קדימה</button>
                                 </form>
                             </div>
                         </div>

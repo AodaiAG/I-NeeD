@@ -59,7 +59,10 @@ function SearchPage() {
                                 {loading ? (
                                     <div className="preloader-popup">
                                         <div className="preloader-content">
-                                            <img src="/images/preloader.gif" alt="Loading..." />
+                                            <img src="/images/preloader.gif"
+                                                 alt="Loading..."
+                                                 style={{ width: '50px', height: 'auto' }}
+                                            />
                                         </div>
                                     </div>
                                 ) : (
@@ -108,7 +111,9 @@ function SearchPage() {
                                         )}
 
                                         <div className="bottom mt-1">
-                                            <img src="/images/search-guy.png" alt="Search Guy" className="img search-img mt-h" />
+                                            <img src="/images/search-guy.png" alt="Search Guy" className="img search-img mt-h"
+
+                                            />
                                             <input type="submit" value="אישור" className="buttonSearch" dir="rtl" />
                                         </div>
                                     </form>
