@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // Replace with your Google Maps API key
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyAnta0R7Fw6ex8NEdyr_lUXri94Iy1_Tr8';
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY ;
 
 // Get address from lat/lon (Reverse geocoding)
 exports.getGeocode = async (req, res) => {

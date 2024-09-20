@@ -1,6 +1,12 @@
-const Item = require('../models/itemModel'); // Import the Item model
+const JobType = require('../models/jobTypeModel'); // Import JobType model
+const OpenAI = require('openai');
 
-// Controller function for handling search
+// Initialize OpenAI client
+const client = new OpenAI({
+    apiKey: '', // Replace with your actual OpenAI API key
+});
+
+// Controller function for handling AI-based job search
 const search = async (req, res) => {
     const { query } = req.query;
 
@@ -9,27 +15,95 @@ const search = async (req, res) => {
     }
 
     try {
-        // Search the Item model using Sequelize's `findAll` method
-        const results = await Item.findAll({
-            where: {
-                // Use Sequelize's LIKE operator for partial matching
-                [Sequelize.Op.or]: [
-                    { name: { [Sequelize.Op.like]: `%${query}%` } },
-                    { description: { [Sequelize.Op.like]: `%${query}%` } }
-                ]
-            },
-            limit: 10 // Limit results to 10
+        // Step 1: Fetch all job types from the database
+        const jobTitles = await JobType.findAll({
+            attributes: ['main', 'sub'] // Only select the main and sub fields
         });
 
-        if (results.length > 0) {
-            return res.json({ success: true, results });
+        // Convert job titles to a format the AI can understand
+        const jobList = jobTitles.map(job => `${job.main} - ${job.sub}`).join('\n');
+
+        // Step 2: Get AI's matching job suggestion based on the query and job titles
+        const aiJobType = await getAiJobMatch(query, jobList);
+
+        // Step 3: If AI provides a valid suggestion, search the job_type table
+        if (aiJobType) {
+            const matchingJob = await JobType.findOne({
+                where: {
+                    main: aiJobType.main,
+                    sub: aiJobType.sub
+                }
+            });
+
+            // Step 4: If we find a match in the database, return it
+            if (matchingJob) {
+                return res.json({
+                    success: true,
+                    jobType: matchingJob
+                });
+            } else {
+                // Step 5: If AI suggests something not in the database, return "job not available"
+                return res.json({
+                    success: false,
+                    message: `The job ${aiJobType.main} - ${aiJobType.sub} is not available in our database.`
+                });
+            }
         } else {
-            return res.json({ success: true, message: 'No results found', results: [] });
+            // Step 6: If AI doesn't find a match, return a "job not found" message
+            return res.json({
+                success: false,
+                message: 'No relevant profession found for your search.'
+            });
         }
     } catch (error) {
         console.error('Search error:', error);
         return res.status(500).json({ success: false, message: 'Error performing search' });
     }
+};
+
+// Function to interact with the OpenAI API and get a job type match
+const getAiJobMatch = async (query, jobList) => {
+    try {
+        // Call the OpenAI API to get suggestions for main and sub job types
+        const response = await client.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                { role: 'system', content: 'You are a helpful assistant' },
+                { role: 'user', content: `
+                
+                From the following data, please match the most appropriate main and sub categories for the user query: ' . "\\n\\n" . ${jobList} . "\\n\\nUser query: " . ${query} . "\\n\\nPlease respond with only the main and sub values from the data provided, without any additional text.
+                return like this  main1value-subvalue1
+              `  }
+            ],
+            max_tokens: 100
+        });
+
+        // Extract and parse suggestions from the AI response
+        const text = response.choices[0].message.content;
+        const suggestions = parseSuggestions(text);
+
+        // Return the parsed suggestions, or null if no valid suggestions were found
+        return suggestions.length > 0 ? suggestions[0] : null;
+
+    } catch (error) {
+        console.error('AI suggestion error:', error);
+        return null; // Return null if there's an error communicating with OpenAI
+    }
+};
+
+// Helper function to parse suggestions from OpenAI response
+const parseSuggestions = (text) => {
+    const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+    const suggestions = [];
+
+    lines.forEach(line => {
+        if (line.includes('-')) {
+            const [main, sub] = line.split('-').map(s => s.trim());
+            suggestions.push({ main, sub });
+        }
+    });
+
+    return suggestions;
 };
 
 module.exports = {
