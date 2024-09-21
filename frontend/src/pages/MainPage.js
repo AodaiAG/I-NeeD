@@ -144,6 +144,7 @@ function MainPage() {
                                 <div className="search searchBtn">
                                     <input
                                         type="text"
+                                        className={isRtl ? 'input-rtl' : 'input-ltr'}
                                         value={searchInput}
                                         onChange={handleSearchInputChange}
                                         placeholder={translation.searchPlaceholder}
