@@ -4,7 +4,11 @@ import PC from '../components/PC'; // Importing PC component
 import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function ThankYouPage() {
-    const { translation } = useLanguage(); // Access translation from the context
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
 
     return (
         <div className="container">
@@ -16,13 +20,13 @@ function ThankYouPage() {
                         <div className="phone-screen">
                             <div className="content">
                                 <div className="top">
-                                    <h2 className="start-title thank-you-title" dir="rtl">
+                                    <h2 className="start-title thank-you-title" dir={getDirection()}>
                                         {translation.thankYouTitle}
                                     </h2>
                                     <img src="/images/thankyou.png" alt={translation.thankYouImageAlt} className="img ty-img mt-1" />
                                 </div>
                                 <div className="bottom mt-1">
-                                    <Link className="navigate-links" dir="rtl" to="/">
+                                    <Link className="navigate-links" dir={getDirection()} to="/">
                                         {translation.finishLink}
                                     </Link>
                                 </div>

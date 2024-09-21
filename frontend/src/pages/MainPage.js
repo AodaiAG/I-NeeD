@@ -7,7 +7,7 @@ import { useLanguage } from '../components/LanguageContext'; // Import the useLa
 
 
 function MainPage() {
-    const { translation } = useLanguage(); // Access translation from the context
+
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -19,7 +19,12 @@ function MainPage() {
     const [locationValue, setLocationValue] = useState(localStorage.getItem('location') || '');
     const [dateAndTime, setDateAndTime] = useState(localStorage.getItem('dateAndTime') || '');
     const [searchInput, setSearchInput] = useState('');
-
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
+    var isRtl = ['ar', 'he'].includes(language);
 
 
     const [minDate, setMinDate] = useState('');
@@ -135,7 +140,7 @@ function MainPage() {
                         <img src="/images/phone.png" alt="Phone Case" />
                         <div className="phone-screen">
                             <div className="main-form">
-                                <h2 className="start-title" dir="rtl">{translation.startTitle}</h2>
+                                <h2 className="start-title" dir={getDirection()}>{translation.startTitle}</h2>
                                 <div className="search searchBtn">
                                     <input
                                         type="text"
@@ -150,11 +155,12 @@ function MainPage() {
                                 <form className="mt-1 form-book" onSubmit={handleSubmit}>
                                     <div className="select_input_container">
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="main">{translation.selectMain}</label>
+                                            <label dir={getDirection()} style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }} htmlFor="main">{translation.selectMain} </label>
                                             <div className="custom-select-wrapper menu">
                                                 <select
                                                     className="custom-select"
                                                     name="main"
+
                                                     id="main"
                                                     value={main}
                                                     onChange={(e) => setMain(e.target.value)}
@@ -167,12 +173,12 @@ function MainPage() {
                                                         </option>
                                                     ))}
                                                 </select>
-                                                <i className="ri-arrow-down-s-fill select-icon"></i>
+                                                <i className={`ri-arrow-down-s-fill select-icon ${isRtl ? 'rtl' : 'ltr'}`}></i>
                                             </div>
                                         </div>
 
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="sub">{translation.selectSub}</label>
+                                            <label dir={getDirection()} style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }} htmlFor="sub">{translation.selectSub}</label>
                                             <div className="custom-select-wrapper menu">
                                                 <select
                                                     className="custom-select"
@@ -190,16 +196,16 @@ function MainPage() {
                                                         </option>
                                                     ))}
                                                 </select>
-                                                <i className="ri-arrow-down-s-fill select-icon"></i>
+                                                <i className={`ri-arrow-down-s-fill select-icon ${isRtl ? 'rtl' : 'ltr'}`}></i>
                                             </div>
                                         </div>
 
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="location">{translation.selectLocation}</label>
+                                            <label dir={getDirection()} htmlFor="location">{translation.selectLocation}</label>
                                             <div className="custom-select-wrapper menu">
                                                 <input
                                                     type="text"
-                                                    dir="rtl"
+                                                    dir={getDirection()}
                                                     className="custom-select"
                                                     name="location"
                                                     id="location"
@@ -213,7 +219,7 @@ function MainPage() {
                                         </div>
 
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="dateAndTime">{translation.selectDateTime}</label>
+                                            <label dir={getDirection()} htmlFor="dateAndTime">{translation.selectDateTime}</label>
                                             <div className="custom-select-wrapper menu" onClick={handleCalendarClick}>
                                                 <textarea
                                                     type="text"
@@ -237,7 +243,7 @@ function MainPage() {
                                                         required
                                                     />
                                                 </div>
-                                                <i className="ri-arrow-down-s-fill select-icon" onClick={handleCalendarClick}></i>
+
                                             </div>
                                         </div>
                                     </div>

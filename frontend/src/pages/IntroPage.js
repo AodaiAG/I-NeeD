@@ -5,7 +5,11 @@ import translations from '../utils/translations.json';
 import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 function IntroPage() {
 
-    const { translation } = useLanguage(); // Access translation from the context
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
     return (
         <div className="container">
             <div className="row">
@@ -16,24 +20,24 @@ function IntroPage() {
                         <div className="phone-screen">
                             <div className="content" id="intro">
                                 <div className="top">
-                                    <p dir="rtl" className="intro-subtitle">
+                                    <p dir={getDirection()} className="intro-subtitle">
                                         {translation.introSubtitle1}<br />
                                         {translation.introSubtitle2}
                                     </p>
-                                    <p dir="rtl" className="intro-subtitle">
+                                    <p dir={getDirection()} className="intro-subtitle">
                                         {translation.introSubtitle3}<br />
                                         {translation.introSubtitle4}<br />
                                         {translation.introSubtitle5}
                                     </p>
-                                    <p dir="rtl" className="intro-subtitle">
+                                    <p dir={getDirection()} className="intro-subtitle">
                                         {translation.introSubtitle6}<br />
                                         {translation.introSubtitle7}
                                     </p>
-                                    <p dir="rtl" className="intro-subtitle">
+                                    <p dir={getDirection()} className="intro-subtitle">
                                         {translation.introSubtitle8}<br />
                                         {translation.introSubtitle9}
                                     </p>
-                                    <p dir="rtl" className="intro-subtitle">{translation.availability}</p>
+                                    <p dir={getDirection()}className="intro-subtitle">{translation.availability}</p>
                                     <img className="img-sm intro-img" src="/images/intro.png" alt="Intro" />
                                 </div>
                                 <div className="bottom">

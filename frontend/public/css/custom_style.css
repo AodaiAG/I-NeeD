@@ -10,7 +10,7 @@ New css code
 
 .select_input_container .select_item label {
     text-align: right;
-    float: right;
+
     margin: 10px 0px 5px 0px;
     font-size: 20px;
     color: white;
@@ -48,9 +48,6 @@ New css code
     width: calc(100% - 1.5em);
     /* Adjust width to accommodate icon */
     padding: 10px;
-    text-align: right;
-    text-align-last: right;
-    direction: rtl;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -60,15 +57,35 @@ New css code
     /* Set background color if needed */
 }
 
+
+.custom-select-wrapper {
+    display: flex;
+    align-items: center; /* Center vertically */
+}
+
+
+
+.select-icon {
+    cursor: pointer; /* Change cursor on hover */
+    margin-left: 8px; /* Add space between input and icon */
+}
+
 .select_input_container .select-icon {
     position: absolute;
-    left: 8px;
-    /* Adjust icon position */
     font-size: 24px;
     color: blue;
-    /* Icon color */
     font-weight: 900;
 }
+
+.select_input_container .select-icon.ltr {
+    right: 8px; /* For LTR languages */
+}
+
+.select_input_container .select-icon.rtl {
+    left: 8px; /* For RTL languages (Hebrew/Arabic) */
+}
+
+
 
 .select_input_container .custom-select.selected + .select-icon {
     transform: rotate(180deg);

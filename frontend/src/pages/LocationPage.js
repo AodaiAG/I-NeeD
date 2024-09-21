@@ -7,7 +7,11 @@ function LocationPage() {
     const [address, setAddress] = useState(localStorage.getItem('location') || '');
     const [lat, setLat] = useState('');
     const [lon, setLon] = useState('');
-    const { translation } = useLanguage(); // Access translation from the context
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
 
     useEffect(() => {
         const loadGoogleMaps = () => {

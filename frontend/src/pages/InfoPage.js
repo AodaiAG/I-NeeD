@@ -10,7 +10,11 @@ function InfoPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { main, sub, location: locationValue, dateAndTime } = location.state || {};
-    const { translation } = useLanguage(); // Access translation from the context
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
 
 
     const [formData, setFormData] = useState({
@@ -71,12 +75,12 @@ function InfoPage() {
                             <div className="content">
                                 <form onSubmit={handleSubmit} className="mt-1 form-book" style={{ width: '90%' }}>
                                     <div className="top">
-                                        <h2 className="start-title" dir="rtl">{translation.infoTitle}</h2>
+                                        <h2 className="start-title" dir={getDirection()}>{translation.infoTitle}</h2>
                                         <div className="input">
-                                            <label dir="rtl" htmlFor="name">{translation.nameLabel}</label>
+                                            <label dir={getDirection()} style={{ textAlign: "left"}} htmlFor="name">{translation.nameLabel}  </label>
                                             <input
                                                 type="text"
-                                                dir="rtl"
+                                                dir={getDirection()}
                                                 placeholder={translation.placeholderName}
                                                 name="name"
                                                 maxLength="20"
@@ -86,7 +90,8 @@ function InfoPage() {
                                             />
                                         </div>
                                         <div className="input" style={{ display: 'inline-block' }}>
-                                            <label dir="rtl" htmlFor="phone" style={{ display: 'inline-block', width: '100%', textAlign: 'right' }}>{translation.phoneLabel}</label>
+                                            <label dir={getDirection()} htmlFor="phone"
+                                                   style={{ display: 'inline-block', width: '100%', textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}>{translation.phoneLabel}</label>
                                             <select
                                                 name="codeN"
                                                 style={{ width: '28%', border: 'none', borderRadius: '4px', padding: '8px', float: 'left', display: 'block', marginTop: '0.5rem', fontSize: 'calc(10px + 0.6vh)', color: '#222825' }}
@@ -105,7 +110,7 @@ function InfoPage() {
                                             </select>
                                             <input
                                                 type="text"
-                                                dir="rtl"
+                                                dir={getDirection()}
                                                 placeholder={translation.placeholderPhone}
                                                 name="phone"
                                                 maxLength="7"
@@ -116,9 +121,11 @@ function InfoPage() {
                                             />
                                         </div>
                                         <div className="input">
-                                            <label dir="rtl" htmlFor="note">{translation.noteLabel}</label>
+                                            <label dir={getDirection()} htmlFor="note" style={{ display: 'inline-block', width: '100%', textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}>{translation.noteLabel}
+
+                                            </label>
                                             <textarea
-                                                dir="rtl"
+                                                dir={getDirection()}
                                                 placeholder={translation.placeholderNote}
                                                 name="note"
                                                 value={formData.note}

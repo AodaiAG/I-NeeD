@@ -6,7 +6,7 @@ import {API_URL} from "../utils/constans";
 import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function SearchPage() {
-    const { translation } = useLanguage(); // Access translation from the context
+
     const [searchParams] = useSearchParams();
     const query = searchParams.get('query') || '';  // Get the search query from the URL
     const [main, setMain] = useState(location.state?.main || '');
@@ -18,7 +18,11 @@ function SearchPage() {
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
     };
-
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
     // Send the query to the backend and get results
     const handleSearch = async () => {
         setLoading(true);
@@ -77,7 +81,7 @@ function SearchPage() {
                                 ) : (
                                     <form onSubmit={handleSubmit}>
                                         <div className="top">
-                                            <h2 className="start-title" dir="rtl">
+                                            <h2 className="start-title" dir={getDirection()}>
                                                 {translation.searchTitle}
                                             </h2>
                                             <div className="search searchBtn">
@@ -96,20 +100,20 @@ function SearchPage() {
                                         {main && subP && (
                                             <div className="top">
                                                 <div className="input">
-                                                    <label dir="rtl" htmlFor="main">{translation.mainLabel}</label>
+                                                    <label dir={getDirection()} htmlFor="main">{translation.mainLabel}</label>
                                                     <input
                                                         type="text"
-                                                        dir="rtl"
+                                                        dir={getDirection()}
                                                         placeholder={main}
                                                         value={main}
                                                         readOnly
                                                     />
                                                 </div>
                                                 <div className="input">
-                                                    <label dir="rtl" htmlFor="sub">{translation.subLabel}</label>
+                                                    <label dir={getDirection()} htmlFor="sub">{translation.subLabel}</label>
                                                     <input
                                                         type="text"
-                                                        dir="rtl"
+                                                        dir={getDirection()}
                                                         placeholder={subP}
                                                         value={subP}
                                                         readOnly
@@ -120,7 +124,7 @@ function SearchPage() {
 
                                         <div className="bottom mt-1">
                                             <img src="/images/search-guy.png" alt={translation.searchGuyAlt} className="img search-img mt-h" />
-                                            <input type="submit" value={translation.confirmButton} className="buttonSearch" dir="rtl" />
+                                            <input type="submit" value={translation.confirmButton} className="buttonSearch" dir={getDirection()} />
                                         </div>
                                     </form>
                                 )}

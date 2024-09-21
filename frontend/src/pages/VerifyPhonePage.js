@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PC from '../components/PC';
-import {API_URL} from "../utils/constans"; // PC Component
+import { API_URL } from "../utils/constans"; // PC Component
 import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function PhoneVerifyPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const { requestId, phone, codeN } = location.state || {};
-    const { translation } = useLanguage(); // Access translation from the context
+    const { translation, language } = useLanguage(); // Access translation and language from the context
 
     const [verificationCode, setVerificationCode] = useState({
         digit1: '',
@@ -22,11 +22,15 @@ function PhoneVerifyPage() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setVerificationCode((prev) => ({
-            ...prev,
-            [name]: value
-        }));
-        moveFocus(e); // Move focus to the next input
+
+        // Ensure the value is a number between 0 and 9
+        if (value === '' || (value >= 0 && value <= 9)) {
+            setVerificationCode((prev) => ({
+                ...prev,
+                [name]: value
+            }));
+            moveFocus(e); // Move focus to the next input
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -64,6 +68,12 @@ function PhoneVerifyPage() {
         }
     };
 
+    // Determine direction based on language
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
+
     return (
         <div className="container">
             <div className="row">
@@ -74,50 +84,62 @@ function PhoneVerifyPage() {
                         <div className="phone-screen">
                             <div className="content">
                                 <form onSubmit={handleSubmit} className={verificationError ? 'incorrect' : 'correct'}>
-                                    <h2 dir="rtl">{translation.verifyTitle}</h2>
-                                    <label dir="rtl">{translation.phoneLabel}</label>
+                                    <h2 dir={getDirection()}>{translation.verifyTitle}</h2>
+                                    <label dir={getDirection()}>{translation.phoneLabel}</label>
                                     <span>{codeN + phone}</span>
-                                    <p dir="rtl">{translation.enterCode}</p>
+                                    <p dir={getDirection()}>{translation.enterCode}</p>
                                     <div className="input_digits">
                                         <input
                                             type="number"
                                             name="digit1"
+                                            min="0"
+                                            max="9"
                                             maxLength="1"
                                             inputMode="numeric"
                                             onInput={handleInputChange}
                                             required
+                                            style={{ marginRight: '5px' }} // Add margin for spacing
                                         />
                                         <input
                                             type="number"
                                             name="digit2"
+                                            min="0"
+                                            max="9"
                                             maxLength="1"
                                             inputMode="numeric"
                                             onInput={handleInputChange}
                                             required
+                                            style={{ marginRight: '5px' }} // Add margin for spacing
                                         />
                                         <input
                                             type="number"
                                             name="digit3"
+                                            min="0"
+                                            max="9"
                                             maxLength="1"
                                             inputMode="numeric"
                                             onInput={handleInputChange}
                                             required
+                                            style={{ marginRight: '5px' }} // Add margin for spacing
                                         />
                                         <input
                                             type="number"
                                             name="digit4"
+                                            min="0"
+                                            max="9"
                                             maxLength="1"
                                             inputMode="numeric"
                                             onInput={handleInputChange}
                                             required
+                                            style={{ marginRight: '5px' }} // Add margin for spacing
                                         />
                                     </div>
                                     <br /><br />
-                                    <button type="submit" dir="rtl" disabled={isSubmitting}>
+                                    <button type="submit" dir={getDirection()} disabled={isSubmitting}>
                                         {verificationError ? translation.retry : translation.confirm}
                                     </button>
                                     {verificationError && (
-                                        <p dir="rtl" style={{ color: 'red' }}>
+                                        <p dir={getDirection()} style={{ color: 'red' }}>
                                             {translation.invalidCode}
                                         </p>
                                     )}

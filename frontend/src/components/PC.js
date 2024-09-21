@@ -2,13 +2,20 @@ import React from 'react';
 import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function PC() {
-    const { translation } = useLanguage(); // Access translation from the context
+
+
+
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
 
     return (
         <div className="left-col">
             <div className="top-heading">
                 <h2>I-Need</h2>
-                <p dir="rtl">{translation.expertsTagline}</p>
+                <p dir= {getDirection()}>{translation.expertsTagline}</p>
             </div>
             <div className="text">
                 <h2 dir="rtl">{translation.connectExperts}</h2>

@@ -5,7 +5,11 @@ import translations from '../utils/translations.json';
 import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function HomePage() {
-    const { translation } = useLanguage(); // Access translation from the context
+    const { translation, language } = useLanguage(); // Access translation and language from the context
+    const getDirection = () => {
+        if (language === 'ar' || language === 'he') return 'rtl';
+        return 'ltr';
+    };
     return (
         <div className="container">
             <div className="row">
@@ -17,7 +21,7 @@ function HomePage() {
                             <div className="content">
                                 <div className="top">
                                     <h2 className="start-title">"{translation.homeTitle}"</h2>
-                                    <p dir="rtl" className="start-subtitle">{translation.homeSubtitle}</p>
+                                    <p dir={getDirection()} className="start-subtitle">{translation.homeSubtitle}</p>
                                     <img className="img img-90" src="/images/home.png" alt="" />
                                 </div>
                                 <div className="bottom">
