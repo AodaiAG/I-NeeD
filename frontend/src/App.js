@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { LanguageProvider } from './components/LanguageContext'; // Import the provider
 import HomePage from './pages/HomePage';
 import IntroPage from './pages/IntroPage';
 import MainPage from './pages/MainPage';
@@ -11,6 +12,7 @@ import PhoneVerifyPage from "./pages/VerifyPhonePage";
 
 function App() {
     return (
+        <LanguageProvider>
         <Router>
             <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -23,6 +25,7 @@ function App() {
                 <Route path="/thankyou" element={<ThankYouPage />} />
             </Routes>
         </Router>
+        </LanguageProvider>
     );
 }
 

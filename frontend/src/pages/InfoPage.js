@@ -1,70 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PC from '../components/PC';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import {API_URL} from "../utils/constans";
+import { API_URL } from "../utils/constans";
+import translations from '../utils/translations.json';
+import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function InfoPage() {
     const navigate = useNavigate();
-    const location = useLocation(); // Retrieve state from the navigation
-    const { main, sub, location: locationValue, dateAndTime } = location.state || {}; // Default to empty object if no state
+    const location = useLocation();
+    const { main, sub, location: locationValue, dateAndTime } = location.state || {};
+    const { translation } = useLanguage(); // Access translation from the context
+
 
     const [formData, setFormData] = useState({
         name: '',
         codeN: '97250',
         phone: '',
         note: '',
-        jobTypeId: sub, // Use the passed state values
+        jobTypeId: sub,
         main: main,
         sub: sub,
         location: locationValue,
         dateAndTime: dateAndTime
     });
 
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // Restrict phone input to digits only
         if (name === 'phone') {
-            const phoneValue = value.replace(/\D/g, ''); // Remove any non-digit characters
-            setFormData((prevData) => ({
-                ...prevData,
-                [name]: phoneValue, // Update phone with only digits
-            }));
-        }
-        // Restrict name input to alphabets only
-        else if (name === 'name') {
-            const nameValue = value.replace(/[^a-zA-Zא-ת\s]/g, ''); // Remove any non-alphabet characters (supports Hebrew too)
-            setFormData((prevData) => ({
-                ...prevData,
-                [name]: nameValue, // Update name with only alphabetic characters
-            }));
+            const phoneValue = value.replace(/\D/g, '');
+            setFormData((prevData) => ({ ...prevData, [name]: phoneValue }));
+        } else if (name === 'name') {
+            const nameValue = value.replace(/[^a-zA-Zא-ת\s]/g, '');
+            setFormData((prevData) => ({ ...prevData, [name]: nameValue }));
         } else {
-            setFormData((prevData) => ({
-                ...prevData,
-                [name]: value,
-            }));
+            setFormData((prevData) => ({ ...prevData, [name]: value }));
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Log form data before sending the request
-        //console.log('Submitting form with data:', formData);
-
         try {
             const response = await axios.post(`${API_URL}/submit-data`, formData);
+            const { jobId } = response.data;
 
-            // Log the full response object
-            console.log('Response from server:', response);
-
-            const { jobId } = response.data; // Retrieve jobId from the response
-
-            // Log the jobId to verify it is being retrieved correctly
-            console.log('Received jobId:', jobId);
-
-            // Navigate to the phone_verify page, passing jobId, phone, and codeN as state
             navigate('/phone_verify', {
                 state: {
                     requestId: jobId,
@@ -72,14 +55,10 @@ function InfoPage() {
                     codeN: formData.codeN
                 }
             });
-
         } catch (error) {
-            // Log any errors that occur
             console.error('Error submitting form:', error);
         }
     };
-
-
 
     return (
         <div className="container">
@@ -92,13 +71,13 @@ function InfoPage() {
                             <div className="content">
                                 <form onSubmit={handleSubmit} className="mt-1 form-book" style={{ width: '90%' }}>
                                     <div className="top">
-                                        <h2 className="start-title" dir="rtl">קצת עליך</h2>
+                                        <h2 className="start-title" dir="rtl">{translation.infoTitle}</h2>
                                         <div className="input">
-                                            <label dir="rtl" htmlFor="name">שם פרטי ומשפחה:</label>
+                                            <label dir="rtl" htmlFor="name">{translation.nameLabel}</label>
                                             <input
                                                 type="text"
                                                 dir="rtl"
-                                                placeholder="דני שובבני"
+                                                placeholder={translation.placeholderName}
                                                 name="name"
                                                 maxLength="20"
                                                 value={formData.name}
@@ -107,15 +86,13 @@ function InfoPage() {
                                             />
                                         </div>
                                         <div className="input" style={{ display: 'inline-block' }}>
-                                            <label dir="rtl" htmlFor="phone" style={{ display: 'inline-block', width: '100%', textAlign: 'right' }}>טלפון:</label>
+                                            <label dir="rtl" htmlFor="phone" style={{ display: 'inline-block', width: '100%', textAlign: 'right' }}>{translation.phoneLabel}</label>
                                             <select
                                                 name="codeN"
                                                 style={{ width: '28%', border: 'none', borderRadius: '4px', padding: '8px', float: 'left', display: 'block', marginTop: '0.5rem', fontSize: 'calc(10px + 0.6vh)', color: '#222825' }}
                                                 value={formData.codeN}
                                                 onChange={handleChange}
-
                                             >
-                                                {/* Phone code options */}
                                                 <option value="97250">050</option>
                                                 <option value="97251">051</option>
                                                 <option value="97252">052</option>
@@ -129,7 +106,7 @@ function InfoPage() {
                                             <input
                                                 type="text"
                                                 dir="rtl"
-                                                placeholder="123 4567"
+                                                placeholder={translation.placeholderPhone}
                                                 name="phone"
                                                 maxLength="7"
                                                 style={{ width: '70%', border: 'none', borderRadius: '4px', padding: '8px', float: 'right', display: 'block' }}
@@ -139,10 +116,10 @@ function InfoPage() {
                                             />
                                         </div>
                                         <div className="input">
-                                            <label dir="rtl" htmlFor="note">הערה:</label>
+                                            <label dir="rtl" htmlFor="note">{translation.noteLabel}</label>
                                             <textarea
                                                 dir="rtl"
-                                                placeholder="אני צריך התקנה של שקע חשמל ליד המקרר, יש לי קיר גבס."
+                                                placeholder={translation.placeholderNote}
                                                 name="note"
                                                 value={formData.note}
                                                 onChange={handleChange}
@@ -156,7 +133,7 @@ function InfoPage() {
                                         <input type="hidden" name="sub" value={formData.sub} />
                                         <input type="hidden" name="location" value={formData.location} />
                                         <input type="hidden" name="dateAndTime" value={formData.dateAndTime} />
-                                        <button type="submit" className='navigate-links btnSubmit mt-5'>חבר לי מומחה</button>
+                                        <button type="submit" className='navigate-links btnSubmit mt-5'>{translation.submitButton}</button>
                                     </div>
                                 </form>
                             </div>

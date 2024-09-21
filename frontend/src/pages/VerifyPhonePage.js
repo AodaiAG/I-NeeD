@@ -3,11 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PC from '../components/PC';
 import {API_URL} from "../utils/constans"; // PC Component
+import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function PhoneVerifyPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const { requestId, phone, codeN } = location.state || {};
+    const { translation } = useLanguage(); // Access translation from the context
 
     const [verificationCode, setVerificationCode] = useState({
         digit1: '',
@@ -68,14 +70,14 @@ function PhoneVerifyPage() {
                 <PC /> {/* Include PC component */}
                 <div className="right-col">
                     <div className="phone-case">
-                        <img src="/images/phone.png" alt="Phone Case" />
+                        <img src="/images/phone.png" alt={translation.phoneCaseAlt} />
                         <div className="phone-screen">
                             <div className="content">
                                 <form onSubmit={handleSubmit} className={verificationError ? 'incorrect' : 'correct'}>
-                                    <h2 dir="rtl">רק נוודא שזה אתה</h2>
-                                    <label dir="rtl">טלפון:</label>
+                                    <h2 dir="rtl">{translation.verifyTitle}</h2>
+                                    <label dir="rtl">{translation.phoneLabel}</label>
                                     <span>{codeN + phone}</span>
-                                    <p dir="rtl">הכנס את הקוד שקיבלת בסמס</p>
+                                    <p dir="rtl">{translation.enterCode}</p>
                                     <div className="input_digits">
                                         <input
                                             type="number"
@@ -112,11 +114,11 @@ function PhoneVerifyPage() {
                                     </div>
                                     <br /><br />
                                     <button type="submit" dir="rtl" disabled={isSubmitting}>
-                                        {verificationError ? 'שוב' : 'אישור'}
+                                        {verificationError ? translation.retry : translation.confirm}
                                     </button>
                                     {verificationError && (
                                         <p dir="rtl" style={{ color: 'red' }}>
-                                            הקוד שהכנסת שגוי נסה שוב
+                                            {translation.invalidCode}
                                         </p>
                                     )}
                                 </form>

@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import PC from '../components/PC';
+import translations from '../utils/translations.json';
+import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
 
 function LocationPage() {
-    const [address, setAddress] = useState(localStorage.getItem('location') || '');  // Remove any hardcoded placeholder
+    const [address, setAddress] = useState(localStorage.getItem('location') || '');
     const [lat, setLat] = useState('');
     const [lon, setLon] = useState('');
+    const { translation } = useLanguage(); // Access translation from the context
 
     useEffect(() => {
         const loadGoogleMaps = () => {
             if (window.google && window.google.maps) {
-                initMap();  // Initialize the map once Google Maps is available
+                initMap();
             } else {
                 const interval = setInterval(() => {
                     if (window.google && window.google.maps) {
-                        clearInterval(interval);  // Stop checking once maps API is loaded
-                        initMap();  // Initialize the map
+                        clearInterval(interval);
+                        initMap();
                     }
-                }, 100);  // Check every 100ms
+                }, 100);
             }
         };
 
-        loadGoogleMaps();  // Call the function to load Google Maps
+        loadGoogleMaps();
     }, []);
 
     const initMap = () => {
-        const initialLocation = { lat: 31.0461, lng: 34.8516 };  // Default location
+        const initialLocation = { lat: 31.0461, lng: 34.8516 };
         const map = new window.google.maps.Map(document.getElementById('map'), {
             center: initialLocation,
             zoom: 7,
@@ -55,7 +58,6 @@ function LocationPage() {
         });
     };
 
-    // Get current location using geolocation
     const handleFindMe = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -83,19 +85,18 @@ function LocationPage() {
                     });
                 },
                 (error) => {
-                    alert('Error getting location: ' + error.message);
+                    alert(translation.geolocationError);
                 }
             );
         } else {
-            alert('Geolocation is not supported by this browser.');
+            alert(translation.geolocationError);
         }
     };
 
-    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         if (address.trim() === '') {
-            alert('Please enter a valid location.');
+            alert(translation.invalidLocation);
         } else {
             localStorage.setItem('location', address);
             window.location.href = '/main';
@@ -103,7 +104,7 @@ function LocationPage() {
     };
 
     return (
-        <div className="container">
+        <div className="container"> {/* Wrapped everything inside this parent div */}
             <div className="row">
                 <PC />
                 <div className="right-col">
@@ -111,29 +112,24 @@ function LocationPage() {
                         <img src="/images/phone.png" alt="Phone Case" />
                         <div className="phone-screen">
                             <div className="content">
-                                <h2>Select a Location</h2>
-                                <label htmlFor="locationInput">Type Location:</label>
+                                <h2>{translation.selectLocation}</h2>
+                                <label htmlFor="locationInput">{translation.typeLocation}</label>
                                 <input
                                     type="text"
                                     id="locationInput"
                                     value={address}
-                                    onChange={(e) => setAddress(e.target.value)}  // Allow typing manually
-                                    placeholder="1234 Elm St, City, Country"  // Placeholder for location input
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    placeholder={translation.placeholder}
                                 />
-                                {/* Find Me button with Geolocation */}
                                 <button className="myLocationBtn" onClick={handleFindMe}>
-                                    Find Me: <i className="ri-map-pin-fill"></i>
+                                    {translation.findMe} <i className="ri-map-pin-fill"></i>
                                 </button>
                                 <input type="hidden" id="lat" value={lat} />
                                 <input type="hidden" id="lon" value={lon} />
                                 <div id="map" style={{ height: '400px', width: '100%' }}></div>
-
-                                {/* Confirm button */}
                                 <button onClick={handleSubmit} className="locationSubmitBtn" type="submit">
-                                    Confirm
+                                    {translation.confirm}
                                 </button>
-
-                                {/* Removed the Back button */}
                             </div>
                         </div>
                     </div>

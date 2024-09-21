@@ -2,32 +2,33 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PC from '../components/PC';
-import {API_URL} from "../utils/constans";
+import { API_URL } from "../utils/constans";
+import { useLanguage } from '../components/LanguageContext'; // Import the useLanguage hook
+
 
 function MainPage() {
+    const { translation } = useLanguage(); // Access translation from the context
+
     const location = useLocation();
     const navigate = useNavigate();
 
     const [mainOptions, setMainOptions] = useState([]);
     const [subOptions, setSubOptions] = useState([]);
-    const [main, setMain] = useState(location.state?.main || localStorage.getItem('main') ||'');
-    const [sub, setSub] = useState( location.state?.subP ||localStorage.getItem('sub') || '');
+    const [main, setMain] = useState(location.state?.main || '');
+    const [sub, setSub] = useState(location.state?.subP || '');
     const [locationValue, setLocationValue] = useState(localStorage.getItem('location') || '');
     const [dateAndTime, setDateAndTime] = useState(localStorage.getItem('dateAndTime') || '');
     const [searchInput, setSearchInput] = useState('');
 
+
+
     const [minDate, setMinDate] = useState('');
-    const dateInputRef = useRef(null);  // Ref for the datetime-local input
+    const dateInputRef = useRef(null);
     const handleCalendarClick = () => {
         if (dateInputRef.current) {
-            dateInputRef.current.showPicker();  // Trigger the calendar pop-up
+            dateInputRef.current.showPicker();
         }
     };
-    useEffect(() => {
-        console.log('Sub options:', subOptions);
-    }, [subOptions]);
-
-
 
     useEffect(() => {
         const now = new Date();
@@ -39,14 +40,26 @@ function MainPage() {
         setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
     }, []);
 
+    useEffect(() => {
+        if (location.state?.main) {
+            setMain(location.state.main);
+        } else {
+            setMain(localStorage.getItem('main') || '');
+        }
 
+        if (location.state?.subP) {
+            setSub(location.state.subP);
+        } else {
+            setSub(localStorage.getItem('sub') || '');
+        }
+    }, [location.state]);
 
     // Fetch Main Professions
     useEffect(() => {
         const fetchMainProfessions = async () => {
             try {
                 const response = await axios.get(`${API_URL}/main-professions`);
-                const dataWithoutFirst = response.data.slice(1); // Exclude the first item from the array
+                const dataWithoutFirst = response.data.slice(1);
                 setMainOptions(dataWithoutFirst);
             } catch (error) {
                 console.error('Error fetching main professions:', error);
@@ -62,13 +75,6 @@ function MainPage() {
                 try {
                     const response = await axios.get(`${API_URL}/sub-professions/${main}`);
                     setSubOptions(response.data.slice(1));
-
-                    if (location.state?.subP) {
-                        const matchingSubOption = response.data.find(option => option.sub === location.state.subP);
-                        if (matchingSubOption) {
-                            setSub(matchingSubOption.id);
-                        }
-                    }
                 } catch (error) {
                     console.error('Error fetching sub professions:', error);
                 }
@@ -78,7 +84,7 @@ function MainPage() {
             setSubOptions([]);
             setSub('');
         }
-    }, [main, location.state?.subP]);
+    }, [main]);
 
     // Store selected values in localStorage before navigating away
     useEffect(() => {
@@ -86,19 +92,16 @@ function MainPage() {
         localStorage.setItem('sub', sub);
         localStorage.setItem('location', locationValue);
         localStorage.setItem('dateAndTime', dateAndTime);
+
+
     }, [main, sub, locationValue, dateAndTime]);
 
-
-    // Handle search input change
     const handleSearchInputChange = (e) => {
         setSearchInput(e.target.value);
-
-
     };
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Prevent the default form submission behavior
 
-        // Redirect to another page (for example, an "information" page)
+    const handleSubmit = (e) => {
+        e.preventDefault();
         if (e.currentTarget.checkValidity()) {
             navigate('/information', {
                 state: {
@@ -108,23 +111,17 @@ function MainPage() {
                     dateAndTime
                 }
             });
+        } else {
+            e.currentTarget.reportValidity();
         }
-        else {
-            // If form is invalid, trigger validation UI
-            e.currentTarget.reportValidity(); // Trigger HTML5 validation error messages
-        }
-
     };
 
-    // Handle search submission
     const handleSearch = () => {
         if (searchInput.trim()) {
-
             navigate(`/search?query=${encodeURIComponent(searchInput)}`);
         }
     };
 
-    // Handle date and time selection
     const handleDateAndTimeChange = (e) => {
         setDateAndTime(e.target.value);
     };
@@ -138,15 +135,13 @@ function MainPage() {
                         <img src="/images/phone.png" alt="Phone Case" />
                         <div className="phone-screen">
                             <div className="main-form">
-                                <h2 className="start-title" dir="rtl">במה אפשר לעזור?</h2>
-
-                                {/* Search functionality */}
+                                <h2 className="start-title" dir="rtl">{translation.startTitle}</h2>
                                 <div className="search searchBtn">
                                     <input
                                         type="text"
                                         value={searchInput}
                                         onChange={handleSearchInputChange}
-                                        placeholder="חיפוש ..."
+                                        placeholder={translation.searchPlaceholder}
                                         required
                                     />
                                     <i className="ri-search-line" onClick={handleSearch}></i>
@@ -154,18 +149,18 @@ function MainPage() {
 
                                 <form className="mt-1 form-book" onSubmit={handleSubmit}>
                                     <div className="select_input_container">
-                                        {/* Main Profession Dropdown */}
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="main">בחר תחום:</label>
+                                            <label dir="rtl" htmlFor="main">{translation.selectMain}</label>
                                             <div className="custom-select-wrapper menu">
                                                 <select
                                                     className="custom-select"
                                                     name="main"
+                                                    id="main"
                                                     value={main}
                                                     onChange={(e) => setMain(e.target.value)}
                                                     required
                                                 >
-                                                    <option value="">ללא בחירה:</option>
+                                                    <option value="">{translation.noSelection}</option>
                                                     {mainOptions.map(option => (
                                                         <option key={option.id} value={option.id}>
                                                             {option.main}
@@ -176,19 +171,19 @@ function MainPage() {
                                             </div>
                                         </div>
 
-                                        {/* Sub Profession Dropdown */}
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="sub">בחר נושא:</label>
+                                            <label dir="rtl" htmlFor="sub">{translation.selectSub}</label>
                                             <div className="custom-select-wrapper menu">
                                                 <select
                                                     className="custom-select"
                                                     name="sub"
+                                                    id="sub"
                                                     value={sub}
                                                     onChange={(e) => setSub(e.target.value)}
                                                     required
                                                     disabled={!main}
                                                 >
-                                                    <option value="">ללא בחירה:</option>
+                                                    <option value="">{translation.noSelection}</option>
                                                     {subOptions.map(option => (
                                                         <option key={option.id} value={option.id}>
                                                             {option.sub}
@@ -199,9 +194,8 @@ function MainPage() {
                                             </div>
                                         </div>
 
-                                        {/* Location Input */}
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="location">בחר עיר:</label>
+                                            <label dir="rtl" htmlFor="location">{translation.selectLocation}</label>
                                             <div className="custom-select-wrapper menu">
                                                 <input
                                                     type="text"
@@ -211,17 +205,15 @@ function MainPage() {
                                                     id="location"
                                                     onClick={() => window.location.href = '/location'}
                                                     value={locationValue}
-                                                    placeholder="בחר מיקום לשירות"
+                                                    placeholder={translation.locationPlaceholder}
                                                     readOnly
                                                     required
                                                 />
-
                                             </div>
                                         </div>
 
-                                        {/* Calendar/Time Selection */}
                                         <div className="select_item">
-                                            <label dir="rtl" htmlFor="dateAndTime">בחר זמן:</label>
+                                            <label dir="rtl" htmlFor="dateAndTime">{translation.selectDateTime}</label>
                                             <div className="custom-select-wrapper menu" onClick={handleCalendarClick}>
                                                 <textarea
                                                     type="text"
@@ -238,6 +230,7 @@ function MainPage() {
                                                         ref={dateInputRef}
                                                         type="datetime-local"
                                                         className="custom-select"
+                                                        id="dateAndTime"
                                                         value={dateAndTime}
                                                         min={minDate}
                                                         onChange={handleDateAndTimeChange}
@@ -249,7 +242,7 @@ function MainPage() {
                                         </div>
                                     </div>
 
-                                    <button type="submit" className="navigate-links btnSubmit mt-1" onSubmit={handleSubmit}>קדימה</button>
+                                    <button type="submit" className="navigate-links btnSubmit mt-1">{translation.nextButton}</button>
                                 </form>
                             </div>
                         </div>
