@@ -2,23 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import PC from '../components/PC';
 import axios from 'axios';
+import {API_URL} from "../utils/constans";
 
 function SearchPage() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('query') || '';  // Get the search query from the URL
-    const [main, setMain] = useState('');
-    const [sub, setSub] = useState('');
+    const [main, setMain] = useState(location.state?.main || '');
+    const [subP, setSub] = useState(location.state?.subP || '');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [searchInput, setSearchInput] = useState('');
+    const handleSearchInputChange = (e) => {
+        setSearchInput(e.target.value);
+    };
 
     // Send the query to the backend and get results
     const handleSearch = async () => {
         setLoading(true);
         setError('');
         try {
-            const response = await axios.get(`http://localhost:3001/api/search?query=${encodeURIComponent(query)}`);
+            const response = await axios.get(`${API_URL}/search?query=${query}`);
             if (response.data.success) {
+                console.log('sub response: '+ response.data.jobType.sub);
                 setMain(response.data.jobType.main);
                 setSub(response.data.jobType.sub);
             } else {
@@ -42,8 +48,9 @@ function SearchPage() {
     // Handle form submission to confirm the selected main and sub categories
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (main && sub) {
-            navigate('/main', { state: { main, sub } });
+        console.log('Submitting:', { main, subP }); // Log values before navigating
+        if (main && subP) {
+            navigate('/main', { state: { main, subP } });
         }
     };
 
@@ -69,23 +76,20 @@ function SearchPage() {
                                     <form onSubmit={handleSubmit}>
                                         <div className="top">
                                             <h2 className="start-title" dir="rtl">אז מה מחפשים?</h2>
-                                            <div className="search">
+                                            <div className="search searchBtn">
                                                 <input
                                                     type="text"
-                                                    value={query}
+                                                    value={searchInput}
+                                                    onChange={handleSearchInputChange}
                                                     placeholder="חיפוש ..."
-                                                    dir="rtl"
-                                                    readOnly
                                                 />
-                                                <button type="submit" className="buttonSearchIcon">
-                                                    <i className="ri-search-line"></i>
-                                                </button>
+                                                <i className="ri-search-line" onClick={handleSearch}></i>
                                             </div>
                                         </div>
 
                                         {error && <p className="error-message">{error}</p>}
 
-                                        {main && sub && (
+                                        {main && subP && (
                                             <div className="top">
                                                 <div className="input">
                                                     <label dir="rtl" htmlFor="main">תחום</label>
@@ -102,8 +106,8 @@ function SearchPage() {
                                                     <input
                                                         type="text"
                                                         dir="rtl"
-                                                        placeholder={sub}
-                                                        value={sub}
+                                                        placeholder={subP}
+                                                        value={subP}
                                                         readOnly
                                                     />
                                                 </div>
