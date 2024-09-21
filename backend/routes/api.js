@@ -23,7 +23,7 @@ router.get('/autocomplete', locationController.getAutocomplete);
 // Store Location Route
 //router.post('/store-location', locationController.storeLocation);
 // Phone verification routes
-router.post('/phone/verify', sendVerificationCode);     // Send verification code
+//router.post('/phone/verify', sendVerificationCode);     // Send verification code
 //router.post('/phone/verify-code', verifyCode);          // Verify the code
 
 
