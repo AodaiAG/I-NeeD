@@ -43,6 +43,7 @@ function MainPage() {
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+        console.log('direction'+ getDirection());
     }, []);
 
     useEffect(() => {
@@ -148,6 +149,7 @@ function MainPage() {
                                         value={searchInput}
                                         onChange={handleSearchInputChange}
                                         placeholder={translation.searchPlaceholder}
+                                        style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}
                                         required
                                     />
                                     <i className="ri-search-line" onClick={handleSearch}></i>
@@ -161,7 +163,7 @@ function MainPage() {
                                                 <select
                                                     className="custom-select"
                                                     name="main"
-
+                                                    style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}
                                                     id="main"
                                                     value={main}
                                                     onChange={(e) => setMain(e.target.value)}
@@ -183,6 +185,7 @@ function MainPage() {
                                             <div className="custom-select-wrapper menu">
                                                 <select
                                                     className="custom-select"
+                                                    style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}
                                                     name="sub"
                                                     id="sub"
                                                     value={sub}
@@ -207,6 +210,7 @@ function MainPage() {
                                                 <input
                                                     type="text"
                                                     dir={getDirection()}
+                                                    style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}
                                                     className="custom-select"
                                                     name="location"
                                                     id="location"
@@ -226,6 +230,7 @@ function MainPage() {
                                                     type="text"
                                                     name="dateAndTime"
                                                     className="calendar-date-input"
+
                                                     style={{ display: 'none' }}
                                                     value={dateAndTime}
                                                     readOnly
@@ -237,6 +242,7 @@ function MainPage() {
                                                         ref={dateInputRef}
                                                         type="datetime-local"
                                                         className="custom-select"
+                                                        style={{ textAlign: getDirection() === 'rtl' ? 'right' : 'left' }}
                                                         id="dateAndTime"
                                                         value={dateAndTime}
                                                         min={minDate}

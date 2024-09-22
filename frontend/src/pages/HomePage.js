@@ -20,7 +20,7 @@ function HomePage() {
                         <div className="phone-screen">
                             <div className="content">
                                 <div className="top">
-                                    <h2 className="start-title">"{translation.homeTitle}"</h2>
+                                    <h2 className="start-title">I-Need</h2>
                                     <p dir={getDirection()} className="start-subtitle">{translation.homeSubtitle}</p>
                                     <img className="img img-90" src="/images/home.png" alt="" />
                                 </div>
